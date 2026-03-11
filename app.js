@@ -89,9 +89,11 @@ async function loadHistory() {
             // clear sidebar history
             historyListEl.innerHTML = '';
 
-            data.history.forEach(msg => {
+            data.history.forEach((msg, index) => {
                 chatHistory.push({ role: msg.role, content: msg.content });
-                addMessageToUI(msg.content, msg.role === 'user' ? 'user' : 'ai');
+
+                const msgId = 'history-msg-' + index;
+                addMessageToUI(msg.content, msg.role === 'user' ? 'user' : 'ai', msgId);
 
                 // Add user messages to the sidebar as recent topics
                 if (msg.role === 'user') {
@@ -102,6 +104,27 @@ async function loadHistory() {
                     const previewText = msg.content.length > 25 ? msg.content.substring(0, 25) + '...' : msg.content;
 
                     li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${previewText}</span>`;
+
+                    li.onclick = () => {
+                        const sidebar = document.getElementById('sidebar');
+                        const sidebarOverlay = document.getElementById('sidebar-overlay');
+                        if (sidebar && sidebarOverlay) {
+                            sidebar.classList.remove('open');
+                            sidebarOverlay.classList.remove('show');
+                        }
+
+                        const targetMsg = document.getElementById(msgId);
+                        if (targetMsg) {
+                            targetMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            targetMsg.style.transition = 'background 0.5s';
+                            const originalBg = targetMsg.style.backgroundColor;
+                            targetMsg.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                            setTimeout(() => {
+                                targetMsg.style.backgroundColor = originalBg;
+                            }, 1000);
+                        }
+                    };
+
                     historyListEl.prepend(li); // add to top
                 }
             });
@@ -201,7 +224,8 @@ async function handleSend() {
 
     // UI Updates
     welcomeScreen.style.display = 'none';
-    addMessageToUI(text, 'user');
+    const userMsgId = 'live-msg-' + Date.now();
+    addMessageToUI(text, 'user', userMsgId);
 
     chatInput.value = '';
     chatInput.style.height = 'auto';
@@ -247,6 +271,27 @@ async function handleSend() {
                 li.className = 'chat-history-item';
                 const previewText = apiMessage.length > 25 ? apiMessage.substring(0, 25) + '...' : apiMessage;
                 li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${previewText}</span>`;
+
+                li.onclick = () => {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebarOverlay = document.getElementById('sidebar-overlay');
+                    if (sidebar && sidebarOverlay) {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.classList.remove('show');
+                    }
+
+                    const targetMsg = document.getElementById(userMsgId);
+                    if (targetMsg) {
+                        targetMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetMsg.style.transition = 'background 0.5s';
+                        const originalBg = targetMsg.style.backgroundColor;
+                        targetMsg.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                        setTimeout(() => {
+                            targetMsg.style.backgroundColor = originalBg;
+                        }, 1000);
+                    }
+                };
+
                 historyListEl.prepend(li);
             }
 
@@ -287,10 +332,13 @@ function parseMD(text) {
     return `<p>${html}</p>`;
 }
 
-function addMessageToUI(text, sender) {
+function addMessageToUI(text, sender, msgId = null) {
     const isUser = sender === 'user';
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
+    if (msgId) {
+        messageDiv.id = msgId;
+    }
 
     const avatarIcon = isUser ? '<i class="ph ph-user"></i>' : '<i class="ph-fill ph-plant"></i>';
     const avatarClass = isUser ? 'user-avatar' : 'ai-avatar';
