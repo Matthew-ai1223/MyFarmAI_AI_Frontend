@@ -418,7 +418,7 @@ shareChatBtn.addEventListener('click', () => {
     setTimeout(() => {
         // Generate a fun dummy UUID for the share link
         const dummyId = Math.random().toString(36).substring(2, 10);
-        shareLinkInput.value = `https://agriconnect.ai/share/${dummyId}`;
+        shareLinkInput.value = `https://my-farm-ai.vercel/share/${dummyId}`;
         copyShareBtn.disabled = false;
     }, 800);
 });
