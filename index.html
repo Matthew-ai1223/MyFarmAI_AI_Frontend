@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect | AI Engine</title>
+    <meta name="description" content="Advanced AI assistant for Nigerian farmers and consumers.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="ph-fill ph-plant"></i>
+                    <span>AgriConnect AI</span>
+                </div>
+            </div>
+
+            <button class="new-chat-btn" id="new-chat-btn">
+                <i class="ph ph-plus"></i>
+                <span>New Consultation</span>
+            </button>
+
+            <div class="sidebar-content">
+                <div class="section-title">Recent Chats</div>
+                <ul class="chat-history-list" id="chat-history-list">
+                    <!-- History injected here -->
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="settings-btn" id="theme-toggle">
+                    <i class="ph ph-moon"></i>
+                    <span>Toggle Theme</span>
+                </button>
+                <div class="user-profile">
+                    <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff"
+                        alt="User">
+                    <div class="user-info">
+                        <span class="user-name" id="user-name-display">Welcome Back</span>
+                        <span class="user-role" id="user-email-display">AgriConnect User</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <!-- Header -->
+            <header class="chat-header">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="ph ph-list"></i>
+                </button>
+                <div class="header-title">
+                    <h1 id="current-chat-title">Agricultural Consultation</h1>
+                    <span class="status-indicator">
+                        <span class="status-dot"></span>
+                        LLaMA 3.3 70B Engine Online
+                    </span>
+                </div>
+                <div class="header-actions">
+                    <div class="lang-selector-wrapper custom-dropdown" id="lang-dropdown">
+                        <div class="dropdown-selected" id="dropdown-selected">
+                            <i class="ph ph-globe" style="color: var(--accent-glow);"></i>
+                            <span id="dropdown-text">English</span>
+                            <i class="ph-bold ph-caret-down caret"></i>
+                        </div>
+                        <ul class="dropdown-options" id="dropdown-options">
+                            <li data-value="English" data-icon="ph-globe" class="active">
+                                <i class="ph ph-globe"></i> English
+                            </li>
+                            <li data-value="Pidgin English" data-icon="ph-chats">
+                                <i class="ph ph-chats"></i> Pidgin English
+                            </li>
+                            <li data-value="Yoruba" data-icon="ph-users-three">
+                                <i class="ph ph-users-three"></i> Yoruba
+                            </li>
+                            <li data-value="Mix Language" data-icon="ph-translate">
+                                <i class="ph ph-translate"></i> Mix Language
+                            </li>
+                        </ul>
+                        <input type="hidden" id="language-selector" value="English">
+                    </div>
+                    <button class="icon-btn" id="share-chat-btn" title="Share Chat"><i
+                            class="ph ph-share-network"></i></button>
+                    <button class="icon-btn" title="Export Chat"><i class="ph ph-export"></i></button>
+                    <button class="icon-btn" title="Settings"><i class="ph ph-gear"></i></button>
+                </div>
+            </header>
+
+            <!-- Chat Messages Container -->
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-icon">
+                        <i class="ph-fill ph-sparkle"></i>
+                    </div>
+                    <h2>How can I assist your farm today?</h2>
+                    <p>I am an expert in the Nigerian agricultural sector. Ask me anything about crops, livestock,
+                        weather, or market pricing.</p>
+
+                    <div class="suggestion-grid">
+                        <button class="suggestion-card"
+                            onclick="setInput('What are the best practices for maize farming in the Northern region during the dry season?')">
+                            <i class="ph ph-sun"></i>
+                            <span>Northern Maize Farming</span>
+                        </button>
+                        <button class="suggestion-card"
+                            onclick="setInput('How do I prevent Newcastle disease in my poultry farm?')">
+                            <i class="ph ph-bird"></i>
+                            <span>Poultry Disease Prevention</span>
+                        </button>
+                        <button class="suggestion-card"
+                            onclick="setInput('What is the current market price trend for Cassava and Yam across various states?')">
+                            <i class="ph ph-chart-line-up"></i>
+                            <span>Cassava Market Prices</span>
+                        </button>
+                        <button class="suggestion-card"
+                            onclick="setInput('Can you provide an optimal fertilizer schedule for a newly planted rice field?')">
+                            <i class="ph ph-drop"></i>
+                            <span>Rice Field Fertilizer Guide</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-wrapper" id="messages-wrapper">
+                    <!-- Messages will be injected here -->
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <button class="input-action-btn" title="Attach file (Coming soon)">
+                        <i class="ph ph-paperclip"></i>
+                    </button>
+                    <textarea id="chat-input"
+                        placeholder="Ask about specific crops, diseases, or local market prices..." rows="1"></textarea>
+                    <button class="send-btn" id="send-btn" disabled>
+                        <i class="ph-fill ph-paper-plane-right"></i>
+                    </button>
+                </div>
+                <div class="input-footer text-xs text-muted">
+                    AgriConnect AI Engine uses the advanced LLaMA 3.3 70B model via Groq. Advice should be verified with
+                    local agronomic practices.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Auth Modal -->
+    <div class="share-modal-backdrop" id="auth-modal">
+        <div class="share-modal-content">
+            <div class="share-header">
+                <h3>Welcome to AgriConnect AI</h3>
+            </div>
+            <p class="text-muted text-xs mb-2">Please enter your email to continue and save your conversation context.
+            </p>
+            <div class="share-link-box" style="flex-direction: column;">
+                <input type="email" id="auth-email-input" placeholder="farmer@example.com" class="auth-input"
+                    style="width: 100%; border: 1px solid var(--border-subtle); background: var(--bg-main); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.5rem; outline: none;">
+                <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 0.75rem 1rem;">Continue to
+                    AI Consultation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal-backdrop" id="share-modal">
+        <div class="share-modal-content">
+            <div class="share-header">
+                <h3>Share Chat</h3>
+                <button class="close-share-btn"
+                    onclick="document.getElementById('share-modal').classList.remove('active')">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <p class="text-muted text-xs mb-2">Anyone with this link will be able to view this conversation.</p>
+            <div class="share-link-box">
+                <input type="text" id="share-link-input" readonly value="Generating link...">
+                <button id="copy-share-btn" class="btn-primary">Copy</button>
+            </div>
+            <div class="toast" id="copy-toast">Link copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
