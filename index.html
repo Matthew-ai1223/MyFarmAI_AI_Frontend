@@ -12,6 +12,17 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#064e3b">
+    <link rel="icon" type="image/png" href="../../images/icon-192.png">
+
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MyFarmAi">
+    <link rel="apple-touch-icon" href="../../images/icon-192.png">
+
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css">
@@ -106,9 +117,8 @@
                     <div class="welcome-icon">
                         <i class="ph-fill ph-sparkle"></i>
                     </div>
-                    <h2>How can I assist your farm today?</h2>
-                    <p>I am an expert in the Nigerian agricultural sector. Ask me anything about crops, livestock,
-                        weather, or market pricing.</p>
+                    <h2>Consult with Veterinary Experts</h2>
+                    <p>Connect with professional agricultural consultants. Ask about livestock health, crop management, or request personalized expert advice.</p>
 
                     <div class="suggestion-grid">
                         <button class="suggestion-card"
@@ -199,6 +209,15 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('AI Engine SW Registered'))
+                    .catch(err => console.log('AI Engine SW Failed', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -37,8 +37,38 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         updateUserDisplay();
         loadHistory();
+        loadConsultantSuggestions(); // Load consultants for cards
     }
 });
+
+async function loadConsultantSuggestions() {
+    try {
+        const res = await fetch(`${API_BASE}/consultants`);
+        const data = await res.json();
+
+        if (data.status === 'success' && data.data && data.data.length > 0) {
+            const suggestionGrid = document.querySelector('.suggestion-grid');
+            if (!suggestionGrid) return;
+
+            suggestionGrid.innerHTML = ''; // Clear defaults
+
+            // Take top 4 consultants
+            data.data.slice(0, 4).forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion-card';
+                btn.onclick = () => setInput(`I'd like to consult with ${c.name} regarding ${c.specialty}. What should I know before starting?`);
+
+                btn.innerHTML = `
+                    <i class="ph ph-user-circle-plus"></i>
+                    <span>Consult ${c.name}</span>
+                `;
+                suggestionGrid.appendChild(btn);
+            });
+        }
+    } catch (err) {
+        console.error("Failed to load consultant suggestions", err);
+    }
+}
 
 authSubmitBtn.addEventListener('click', async () => {
     const email = authEmailInput.value.trim();
@@ -182,11 +212,11 @@ sidebarOverlay.addEventListener('click', () => {
 
 // Theme toggler
 themeToggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-    const isLight = document.body.classList.contains('light-theme');
+    document.body.classList.toggle('dark-theme');
+    const isDark = document.body.classList.contains('dark-theme');
     const icon = themeToggleBtn.querySelector('i');
 
-    if (isLight) {
+    if (isDark) {
         icon.classList.replace('ph-moon', 'ph-sun');
     } else {
         icon.classList.replace('ph-sun', 'ph-moon');

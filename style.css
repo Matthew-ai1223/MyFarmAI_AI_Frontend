@@ -1,13 +1,13 @@
 /* --- CSS Custom Properties --- */
 :root {
-    /* Color Palette */
-    --bg-main: #0b110e;
-    --bg-secondary: #131d18;
-    --bg-panel: rgba(19, 29, 24, 0.7);
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-highlight: rgba(16, 185, 129, 0.2);
-    --text-primary: #f0fdf4;
-    --text-secondary: #9ca3af;
+    /* Color Palette - DEFAULT LIGHT THEME */
+    --bg-main: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-panel: rgba(255, 255, 255, 0.8);
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-highlight: rgba(16, 185, 129, 0.3);
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
     --accent-glow: #10b981;
     --accent-glow-subtle: rgba(16, 185, 129, 0.15);
     --accent-glow-hover: rgba(16, 185, 129, 0.3);
@@ -27,14 +27,14 @@
     --radius-xl: 32px;
 }
 
-body.light-theme {
-    --bg-main: #f8fafc;
-    --bg-secondary: #ffffff;
-    --bg-panel: rgba(255, 255, 255, 0.8);
-    --border-subtle: rgba(0, 0, 0, 0.08);
-    --border-highlight: rgba(16, 185, 129, 0.3);
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
+body.dark-theme {
+    --bg-main: #0b110e;
+    --bg-secondary: #131d18;
+    --bg-panel: rgba(19, 29, 24, 0.7);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(16, 185, 129, 0.2);
+    --text-primary: #f0fdf4;
+    --text-secondary: #9ca3af;
 }
 
 /* --- Base --- */
@@ -504,14 +504,16 @@ button:focus {
 .welcome-screen h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #f0fdf4 0%, var(--accent-glow) 100%);
+    background: linear-gradient(135deg, #0f172a 0%, var(--accent-glow) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-body.light-theme .welcome-screen h2 {
-    background: linear-gradient(135deg, #0f172a 0%, var(--accent-glow) 100%);
+body.dark-theme .welcome-screen h2 {
+    background: linear-gradient(135deg, #f0fdf4 0%, var(--accent-glow) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
