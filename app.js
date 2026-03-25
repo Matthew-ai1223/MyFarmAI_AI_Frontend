@@ -18,8 +18,8 @@ const newChatBtn = document.getElementById('new-chat-btn');
 const languageSelector = document.getElementById('language-selector');
 
 // API Configuration
-const API_BASE = 'http://localhost:3000/api';
-// const API_BASE = 'https://farm-ai-iota.vercel.app/api'; 
+//const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://farm-ai-iota.vercel.app/api';
 
 // State
 let chatHistory = [];
@@ -39,6 +39,27 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUserDisplay();
         loadConversations(); // Load sidebar conversations
         loadConsultantSuggestions(); // Load consultants for cards
+    }
+});
+
+// [NEW] Bridge: Listen for Auth Sync from Main App (index.html)
+window.addEventListener('message', (event) => {
+    const data = event.data;
+    if (data.type === 'LOGIN_SYNC' && data.email) {
+        console.log("🔐 AI Sync: Logged in as", data.email);
+        userEmail = data.email;
+        localStorage.setItem('agriconnect_user_email', userEmail);
+        authModal.classList.remove('active');
+        updateUserDisplay();
+        loadConversations();
+        loadConsultantSuggestions();
+    } else if (data.type === 'LOGOUT') {
+        console.log("🔐 AI Sync: Logged out");
+        userEmail = '';
+        localStorage.removeItem('agriconnect_user_email');
+        authModal.classList.add('active');
+        chatHistory = [];
+        renderMessages();
     }
 });
 
@@ -122,7 +143,7 @@ async function loadConversations() {
                 if (currentConversationId === conv.id) li.classList.add('active');
 
                 li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${conv.title}</span>`;
-                
+
                 li.onclick = () => {
                     loadSpecificConversation(conv.id);
                     // Close mobile sidebar
@@ -283,10 +304,10 @@ async function handleSend() {
         const response = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                message: apiMessage, 
+            body: JSON.stringify({
+                message: apiMessage,
                 email: userEmail,
-                conversationId: currentConversationId 
+                conversationId: currentConversationId
             })
         });
 
