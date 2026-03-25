@@ -1,360 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFarmAi | Admin Dashboard</title>
-    <meta name="description" content="Admin view for all AI platform conversations.">
-    <!-- Google Fonts -->
+    <title>MyFarmAI | Vet Connect Admin Monitor</title>
+    <meta name="description" content="Vet Connect admin monitor for users, chats, products, and platform activity.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-main: #0b110e;
-            --bg-secondary: #131d18;
-            --bg-panel: rgba(19, 29, 24, 0.7);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(16, 185, 129, 0.2);
-            --text-primary: #f0fdf4;
-            --text-secondary: #9ca3af;
-            --accent-glow: #10b981;
-            --accent-glow-subtle: rgba(16, 185, 129, 0.15);
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar {
-            width: 300px;
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--border-subtle);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 2rem;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .sidebar-header h2 {
-            font-family: 'Outfit', sans-serif;
-            margin: 0;
-            color: var(--accent-glow);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .user-item {
-            padding: 1.2rem 2rem;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border-subtle);
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .user-item:hover,
-        .user-item.active {
-            background: var(--bg-panel);
-            border-left: 4px solid var(--accent-glow);
-        }
-
-        .user-item .email {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .user-item .stats {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
-            position: relative;
-        }
-
-        .header {
-            padding: 1.5rem 3rem;
-            border-bottom: 1px solid var(--border-subtle);
-            background: var(--bg-panel);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-        }
-
-        .chat-container {
-            flex: 1;
-            padding: 2rem 3rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .message {
-            max-width: 80%;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .message.user {
-            align-self: flex-end;
-            align-items: flex-end;
-        }
-
-        .message.assistant {
-            align-self: flex-start;
-            align-items: flex-start;
-        }
-
-        .bubble {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .message.user .bubble {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-top-right-radius: 0;
-        }
-
-        .message.assistant .bubble {
-            background: var(--accent-glow-subtle);
-            border: 1px solid var(--border-highlight);
-            border-top-left-radius: 0;
-            color: #d1fae5;
-        }
-
-        .meta {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 10px;
-        }
-
-        .loading-screen {
-            position: absolute;
-            inset: 0;
-            background: var(--bg-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            color: var(--accent-glow);
-            font-size: 2rem;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            gap: 1rem;
-            margin: auto;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: var(--border-subtle);
-        }
-
-        /* custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-subtle);
-            border-radius: 10px;
-        }
+        :root { --bg:#091015; --panel:#0f1a21; --line:#1f3340; --text:#e9f3f8; --muted:#8ba0ad; --ok:#10b981; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,sans-serif; }
+        .container { max-width:1280px; margin:0 auto; padding:20px; }
+        .head { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+        .title { font-size:24px; font-weight:800; }
+        .muted { color:var(--muted); font-size:13px; }
+        .controls { display:flex; gap:8px; flex-wrap:wrap; }
+        button, select { border:1px solid var(--line); background:#0b141a; color:var(--text); border-radius:10px; padding:8px 10px; }
+        .primary { background:var(--ok); color:#032117; font-weight:700; border:0; cursor:pointer; }
+        .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:14px 0; }
+        .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; }
+        .k { font-size:12px; color:var(--muted); text-transform:uppercase; }
+        .v { font-size:28px; font-weight:800; margin-top:4px; }
+        .main { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .panel-title { margin:0 0 8px 0; font-size:15px; }
+        .tbl { width:100%; border-collapse:collapse; font-size:13px; }
+        .tbl th,.tbl td{ border-bottom:1px solid var(--line); padding:8px; text-align:left; vertical-align:top; }
+        .scroll { max-height:350px; overflow:auto; }
+        .activity { border-bottom:1px solid var(--line); padding:8px 0; font-size:13px; }
+        .chat { max-height:350px; overflow:auto; background:#101f27; border:1px solid var(--line); border-radius:10px; padding:8px; }
+        .msg { margin-bottom:8px; font-size:13px; line-height:1.4; }
+        @media (max-width:980px){ .stats{grid-template-columns:repeat(2,minmax(0,1fr));} .main{grid-template-columns:1fr;} }
     </style>
 </head>
-
 <body>
-
-    <div id="loader" class="loading-screen">
-        <i class="ph ph-spinner-gap ph-spin"></i>
-        <div style="font-size:1rem; color: #9ca3af; font-family:'Outfit'">Loading Platform Data...</div>
-    </div>
-
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2><i class="ph-fill ph-plant"></i> Admin Logs</h2>
-            <div style="font-size: 0.8rem; color:#9ca3af; margin-top:5px;">System Conversational History</div>
-        </div>
-        <ul class="user-list" id="user-list">
-            <!-- Injected via JS -->
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <header class="header">
-            <h1 id="active-user-title">Overview</h1>
-            <div style="font-size:0.85rem; color:#9ca3af;" id="active-user-stats">Select a user to view</div>
-        </header>
-
-        <div class="chat-container" id="chat">
-            <div class="empty-state">
-                <i class="ph-fill ph-users"></i>
-                <div id="empty-msg">Select a user from the sidebar to view their history.</div>
+    <div class="container">
+        <div class="head">
+            <div>
+                <div class="title">Vet Connect Admin Monitor</div>
+                <div class="muted">Realtime visibility for users, chats, products, and system activity.</div>
+            </div>
+            <div class="controls">
+                <select id="api-base">
+                    <option value="http://localhost:3000/api">Local API</option>
+                    <option value="https://farm-ai-iota.vercel.app/api">Production API</option>
+                </select>
+                <button class="primary" id="refresh">Refresh</button>
             </div>
         </div>
-    </main>
+
+        <div class="stats">
+            <div class="card"><div class="k">Users</div><div class="v" id="s-users">0</div></div>
+            <div class="card"><div class="k">Active Users</div><div class="v" id="s-active">0</div></div>
+            <div class="card"><div class="k">Messages</div><div class="v" id="s-msg">0</div></div>
+            <div class="card"><div class="k">Products</div><div class="v" id="s-products">0</div></div>
+        </div>
+
+        <div class="main">
+            <div class="card">
+                <h3 class="panel-title">Users</h3>
+                <div class="scroll">
+                    <table class="tbl">
+                        <thead><tr><th>Email</th><th>Convos</th><th>Messages</th><th>Last Seen</th></tr></thead>
+                        <tbody id="users-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="panel-title">Recent Activity</h3>
+                <div class="scroll" id="activity-list"></div>
+            </div>
+        </div>
+
+        <div class="main" style="margin-top:12px;">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                    <h3 class="panel-title" style="margin:0;">User Chat</h3>
+                    <select id="chat-user"></select>
+                </div>
+                <div class="chat" id="chat-box">Select a user to inspect chat logs.</div>
+            </div>
+            <div class="card">
+                <h3 class="panel-title">Products</h3>
+                <div class="scroll">
+                    <table class="tbl">
+                        <thead><tr><th>Title</th><th>Price</th><th>Seller</th><th>Created</th></tr></thead>
+                        <tbody id="products-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <p class="muted" id="status">Ready.</p>
+    </div>
 
     <script>
-        // Use same domain logic as the main app
-        const API_BASE = 'https://farm-ai-iota.vercel.app/api';
+        const $ = (id) => document.getElementById(id);
+        const state = { data: null };
+        const fmtN = (n) => new Intl.NumberFormat().format(n || 0);
+        const fmtD = (d) => d ? new Date(d).toLocaleString() : "-";
 
-        let adminData = {};
-
-        async function initAdmin() {
-            const loader = document.getElementById('loader');
+        async function load() {
             try {
-                // Fetch the newly created backend admin endpoint
-                const res = await fetch(`${API_BASE}/admin/all`);
+                $("status").textContent = "Loading admin data...";
+                const res = await fetch(`${$("api-base").value}/admin/overview`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-
-                if (data.users && Object.keys(data.users).length > 0) {
-                    adminData = data.users;
-                    renderSidebar();
-                } else {
-                    document.getElementById('user-list').innerHTML = '<div style="padding: 2rem; color:#9ca3af; text-align:center;">No history found in database.</div>';
-                    document.getElementById('empty-msg').innerText = "Awaiting user interactions...";
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Failed to load admin data. Is the backend running?");
-            } finally {
-                loader.classList.add('hidden');
+                if (data.status !== "success") throw new Error(data.message || "Unknown error");
+                state.data = data;
+                render();
+                $("status").textContent = `Loaded at ${new Date().toLocaleTimeString()}`;
+            } catch (e) {
+                $("status").textContent = `Load failed: ${e.message}`;
             }
         }
 
-        function renderSidebar() {
-            const list = document.getElementById('user-list');
-            list.innerHTML = '';
+        function render() {
+            const d = state.data;
+            $("s-users").textContent = fmtN(d.summary.users);
+            $("s-active").textContent = fmtN(d.summary.activeUsers);
+            $("s-msg").textContent = fmtN(d.summary.messages);
+            $("s-products").textContent = fmtN(d.summary.products);
 
-            // Loop through each email grouping returned
-            Object.keys(adminData).forEach((email, index) => {
-                const li = document.createElement('li');
-                li.className = 'user-item';
-                li.innerHTML = `
-                    <div class="email"><i class="ph ph-envelope-simple"></i> ${email}</div>
-                    <div class="stats">${adminData[email].length} messages logged</div>
-                `;
-                li.onclick = () => {
-                    document.querySelectorAll('.user-item').forEach(el => el.classList.remove('active'));
-                    li.classList.add('active');
-                    renderChat(email);
-                };
-                list.appendChild(li);
-
-                // Select first user by default if available
-                if (index === 0) li.click();
+            const uBody = $("users-body");
+            uBody.innerHTML = "";
+            (d.users || []).forEach((u) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${u.email}</td><td>${fmtN(u.conversations)}</td><td>${fmtN(u.messages)}</td><td>${fmtD(u.lastSeen)}</td>`;
+                uBody.appendChild(tr);
             });
+
+            const pBody = $("products-body");
+            pBody.innerHTML = "";
+            (d.products || []).forEach((p) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${p.title || "Untitled"}</td><td>N${fmtN(p.price)}</td><td>${p.sellerEmail || "-"}</td><td>${fmtD(p.createdAt)}</td>`;
+                pBody.appendChild(tr);
+            });
+
+            const aList = $("activity-list");
+            aList.innerHTML = "";
+            (d.activity || []).slice(0, 80).forEach((a) => {
+                const div = document.createElement("div");
+                div.className = "activity";
+                div.innerHTML = `<div>${a.label}</div><div class="muted">${a.email || "system"} - ${fmtD(a.timestamp)}</div>`;
+                aList.appendChild(div);
+            });
+
+            const chatUser = $("chat-user");
+            chatUser.innerHTML = "";
+            Object.keys(d.chats || {}).forEach((email) => {
+                const op = document.createElement("option");
+                op.value = email;
+                op.textContent = email;
+                chatUser.appendChild(op);
+            });
+            chatUser.onchange = () => renderChat(chatUser.value);
+            if (chatUser.options.length) renderChat(chatUser.value || chatUser.options[0].value);
         }
 
         function renderChat(email) {
-            // Update Headers
-            document.getElementById('active-user-title').innerHTML = `<i class="ph ph-user"></i> ${email}`;
-            document.getElementById('active-user-stats').innerText = `Total mapped interactions: ${adminData[email].length}`;
-
-            const chat = document.getElementById('chat');
-            chat.innerHTML = '';
-
-            const logs = adminData[email];
-
-            if (!logs || logs.length === 0) {
-                chat.innerHTML = '<div class="empty-state">No messages tracked.</div>';
+            const box = $("chat-box");
+            const logs = state.data?.chats?.[email] || [];
+            if (!logs.length) {
+                box.textContent = "No chat data for this user.";
                 return;
             }
-
-            // Loop through chronological role statements
-            logs.forEach(msg => {
-                const mDiv = document.createElement('div');
-                mDiv.className = `message ${msg.role}`;
-
-                // Simple parsing to handle basic newlines and exact strings
-                let htmlContent = msg.content
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/\n\n/g, '<br><br>')
-                    .replace(/\n/g, '<br>');
-
-                // Attempt to parse Markdown bold strings dynamically
-                htmlContent = htmlContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-                const time = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : 'System Timestamp';
-
-                mDiv.innerHTML = `
-                    <div class="bubble">${htmlContent}</div>
-                    <div class="meta">
-                        <span>${msg.role === 'user' ? 'User Query' : 'AI Engine Response'}</span> &bull; <span>${time}</span>
-                    </div>
-                `;
-                chat.appendChild(mDiv);
+            box.innerHTML = "";
+            logs.forEach((m) => {
+                const safe = (m.content || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const div = document.createElement("div");
+                div.className = "msg";
+                div.innerHTML = `<strong>${m.role}</strong>: ${safe}<div class="muted">${fmtD(m.timestamp)}</div>`;
+                box.appendChild(div);
             });
-
-            // Auto scroll down to newest history entry
-            setTimeout(() => {
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-            }, 50);
         }
 
-        // Initialize Call
-        initAdmin();
+        $("refresh").addEventListener("click", load);
+        load();
     </script>
 </body>
-
 </html>
