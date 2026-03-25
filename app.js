@@ -18,13 +18,14 @@ const newChatBtn = document.getElementById('new-chat-btn');
 const languageSelector = document.getElementById('language-selector');
 
 // API Configuration
-// const API_BASE = 'http://localhost:3000/api'; // Or 'https://farm-ai-iota.vercel.app/api' for production
-const API_BASE = 'https://farm-ai-iota.vercel.app/api'; // Or 'https://farm-ai-iota.vercel.app/api' for production
+const API_BASE = 'http://localhost:3000/api';
+// const API_BASE = 'https://farm-ai-iota.vercel.app/api'; 
 
 // State
 let chatHistory = [];
 let isWaitingForResponse = false;
 let userEmail = localStorage.getItem('agriconnect_user_email') || '';
+let currentConversationId = null;
 
 // Auth Elements
 const authModal = document.getElementById('auth-modal');
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         authModal.classList.add('active');
     } else {
         updateUserDisplay();
-        loadHistory();
+        loadConversations(); // Load sidebar conversations
         loadConsultantSuggestions(); // Load consultants for cards
     }
 });
@@ -89,7 +90,7 @@ authSubmitBtn.addEventListener('click', async () => {
             localStorage.setItem('agriconnect_user_email', email);
             authModal.classList.remove('active');
             updateUserDisplay();
-            loadHistory();
+            loadConversations();
         } else {
             alert('Failed to authenticate. Please try again.');
         }
@@ -102,65 +103,68 @@ authSubmitBtn.addEventListener('click', async () => {
     }
 });
 
-async function loadHistory() {
+async function loadConversations() {
     if (!userEmail) return;
 
     try {
-        const res = await fetch(`${API_BASE}/history?email=${encodeURIComponent(userEmail)}`);
+        const res = await fetch(`${API_BASE}/conversations?email=${encodeURIComponent(userEmail)}`);
         const data = await res.json();
 
         const historyListEl = document.getElementById('chat-history-list');
+        if (!historyListEl) return;
 
-        if (data.history && data.history.length > 0) {
-            welcomeScreen.style.display = 'none';
-            chatHistory = []; // Reset locally if modifying history
-            messagesWrapper.innerHTML = '';
+        historyListEl.innerHTML = '';
 
-            // clear sidebar history
-            historyListEl.innerHTML = '';
+        if (data.conversations && data.conversations.length > 0) {
+            data.conversations.forEach(conv => {
+                const li = document.createElement('li');
+                li.className = 'chat-history-item';
+                if (currentConversationId === conv.id) li.classList.add('active');
 
-            data.history.forEach((msg, index) => {
-                chatHistory.push({ role: msg.role, content: msg.content });
+                li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${conv.title}</span>`;
+                
+                li.onclick = () => {
+                    loadSpecificConversation(conv.id);
+                    // Close mobile sidebar
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('show');
+                };
 
-                const msgId = 'history-msg-' + index;
-                addMessageToUI(msg.content, msg.role === 'user' ? 'user' : 'ai', msgId);
-
-                // Add user messages to the sidebar as recent topics
-                if (msg.role === 'user') {
-                    const li = document.createElement('li');
-                    li.className = 'chat-history-item';
-
-                    // take first 25 characters of the prompt as a title summary
-                    const previewText = msg.content.length > 25 ? msg.content.substring(0, 25) + '...' : msg.content;
-
-                    li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${previewText}</span>`;
-
-                    li.onclick = () => {
-                        const sidebar = document.getElementById('sidebar');
-                        const sidebarOverlay = document.getElementById('sidebar-overlay');
-                        if (sidebar && sidebarOverlay) {
-                            sidebar.classList.remove('open');
-                            sidebarOverlay.classList.remove('show');
-                        }
-
-                        const targetMsg = document.getElementById(msgId);
-                        if (targetMsg) {
-                            targetMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            targetMsg.style.transition = 'background 0.5s';
-                            const originalBg = targetMsg.style.backgroundColor;
-                            targetMsg.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-                            setTimeout(() => {
-                                targetMsg.style.backgroundColor = originalBg;
-                            }, 1000);
-                        }
-                    };
-
-                    historyListEl.prepend(li); // add to top
-                }
+                historyListEl.appendChild(li);
             });
         }
     } catch (err) {
-        console.error("Failed to load history", err);
+        console.error("Failed to load conversations", err);
+    }
+}
+
+async function loadSpecificConversation(id) {
+    if (!userEmail || !id) return;
+
+    try {
+        currentConversationId = id;
+        const res = await fetch(`${API_BASE}/history?email=${encodeURIComponent(userEmail)}&conversationId=${id}`);
+        const data = await res.json();
+
+        if (data.history) {
+            welcomeScreen.style.display = 'none';
+            chatHistory = data.history.map(m => ({ role: m.role, content: m.content }));
+            messagesWrapper.innerHTML = '';
+
+            data.history.forEach((msg) => {
+                addMessageToUI(msg.content, msg.role === 'user' ? 'user' : 'ai');
+            });
+
+            // Update active state in sidebar
+            const items = document.querySelectorAll('.chat-history-item');
+            items.forEach(item => {
+                const title = item.querySelector('span').textContent;
+                // Simple title matching or better, re-render sidebar
+            });
+            loadConversations(); // Refresh to set active class
+        }
+    } catch (err) {
+        console.error("Failed to load specific conversation", err);
     }
 }
 
@@ -225,15 +229,14 @@ themeToggleBtn.addEventListener('click', () => {
 
 // Reset Chat
 newChatBtn.addEventListener('click', () => {
-    if (chatHistory.length === 0) return;
-    if (confirm('Start a new session? Current session will be cleared from view.')) {
-        chatHistory = [];
-        messagesWrapper.innerHTML = '';
-        welcomeScreen.style.display = 'flex';
-        chatInput.value = '';
-        chatInput.style.height = 'auto';
-        sendBtn.disabled = true;
-    }
+    currentConversationId = null;
+    chatHistory = [];
+    messagesWrapper.innerHTML = '';
+    welcomeScreen.style.display = 'flex';
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    sendBtn.disabled = true;
+    loadConversations(); // Refresh sidebar to remove active state
 });
 
 // Expose setInput to global scope for suggestion cards
@@ -280,51 +283,32 @@ async function handleSend() {
         const response = await fetch(`${API_BASE}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: apiMessage, history: chatHistory, email: userEmail })
+            body: JSON.stringify({ 
+                message: apiMessage, 
+                email: userEmail,
+                conversationId: currentConversationId 
+            })
         });
 
         const data = await response.json();
         removeElement(loadingId);
 
         if (response.ok) {
-            // Update History array for Groq context
+            // Update conversation ID if it's new
+            const isNewChat = !currentConversationId;
+            currentConversationId = data.conversationId;
+
+            // Update History array
             chatHistory.push({ role: 'user', content: apiMessage });
             chatHistory.push({ role: 'assistant', content: data.reply });
 
             // Render AI Response
             addMessageToUI(data.reply, 'ai');
 
-            // Re-render sidebar history logic manually for the new prompt
-            const historyListEl = document.getElementById('chat-history-list');
-            if (historyListEl) {
-                const li = document.createElement('li');
-                li.className = 'chat-history-item';
-                const previewText = apiMessage.length > 25 ? apiMessage.substring(0, 25) + '...' : apiMessage;
-                li.innerHTML = `<i class="ph ph-chat-teardrop-text"></i> <span>${previewText}</span>`;
-
-                li.onclick = () => {
-                    const sidebar = document.getElementById('sidebar');
-                    const sidebarOverlay = document.getElementById('sidebar-overlay');
-                    if (sidebar && sidebarOverlay) {
-                        sidebar.classList.remove('open');
-                        sidebarOverlay.classList.remove('show');
-                    }
-
-                    const targetMsg = document.getElementById(userMsgId);
-                    if (targetMsg) {
-                        targetMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        targetMsg.style.transition = 'background 0.5s';
-                        const originalBg = targetMsg.style.backgroundColor;
-                        targetMsg.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-                        setTimeout(() => {
-                            targetMsg.style.backgroundColor = originalBg;
-                        }, 1000);
-                    }
-                };
-
-                historyListEl.prepend(li);
+            // Refresh history list if it was a new chat
+            if (isNewChat) {
+                loadConversations();
             }
-
         } else {
             console.error(data.error);
             addMessageToUI("Error: " + (data.error || "Failed to reach AI Engine."), 'ai');
