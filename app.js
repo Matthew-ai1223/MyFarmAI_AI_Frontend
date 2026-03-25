@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         updateUserDisplay();
         loadConversations(); // Load sidebar conversations
-        loadConsultantSuggestions(); // Load consultants for cards
     }
 });
 
@@ -63,34 +62,8 @@ window.addEventListener('message', (event) => {
     }
 });
 
-async function loadConsultantSuggestions() {
-    try {
-        const res = await fetch(`${API_BASE}/consultants`);
-        const data = await res.json();
-
-        if (data.status === 'success' && data.data && data.data.length > 0) {
-            const suggestionGrid = document.querySelector('.suggestion-grid');
-            if (!suggestionGrid) return;
-
-            suggestionGrid.innerHTML = ''; // Clear defaults
-
-            // Take top 4 consultants
-            data.data.slice(0, 4).forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = 'suggestion-card';
-                btn.onclick = () => setInput(`I'd like to consult with ${c.name} regarding ${c.specialty}. What should I know before starting?`);
-
-                btn.innerHTML = `
-                    <i class="ph ph-user-circle-plus"></i>
-                    <span>Consult ${c.name}</span>
-                `;
-                suggestionGrid.appendChild(btn);
-            });
-        }
-    } catch (err) {
-        console.error("Failed to load consultant suggestions", err);
-    }
-}
+// Starter questions stay in index.html (.suggestion-grid). We do not fetch /consultants here,
+// so the UI is not replaced with "Consult Dr. …" cards from the API.
 
 authSubmitBtn.addEventListener('click', async () => {
     const email = authEmailInput.value.trim();
@@ -120,7 +93,7 @@ authSubmitBtn.addEventListener('click', async () => {
         alert('Network error during authentication.');
     } finally {
         authSubmitBtn.disabled = false;
-        authSubmitBtn.textContent = 'Continue to AI Consultation';
+        authSubmitBtn.textContent = 'Continue';
     }
 });
 

@@ -41,7 +41,7 @@
 
             <button class="new-chat-btn" id="new-chat-btn">
                 <i class="ph ph-plus"></i>
-                <span>New Consultation</span>
+                <span>New chat</span>
             </button>
 
             <div class="sidebar-content">
@@ -117,29 +117,29 @@
                     <div class="welcome-icon">
                         <i class="ph-fill ph-sparkle"></i>
                     </div>
-                    <h2>Consult with Veterinary Experts</h2>
-                    <p>Connect with professional agricultural consultants. Ask about livestock health, crop management, or request personalized expert advice.</p>
+                    <h2>Ask anything about your farm</h2>
+                    <p>Get help on <strong>crops</strong>, <strong>livestock</strong>, <strong>planting</strong>, and <strong>weather</strong> — tailored for Nigerian agriculture.</p>
 
                     <div class="suggestion-grid">
                         <button class="suggestion-card"
-                            onclick="setInput('What are the best practices for maize farming in the Northern region during the dry season?')">
-                            <i class="ph ph-sun"></i>
-                            <span>Northern Maize Farming</span>
+                            onclick="setInput('What are common leaf diseases on tomato plants in Nigeria and how can I treat them safely before harvest?')">
+                            <i class="ph ph-plant"></i>
+                            <span>Plants &amp; crops</span>
                         </button>
                         <button class="suggestion-card"
-                            onclick="setInput('How do I prevent Newcastle disease in my poultry farm?')">
-                            <i class="ph ph-bird"></i>
-                            <span>Poultry Disease Prevention</span>
+                            onclick="setInput('What feeding and housing tips help keep layer chickens healthy during the harmattan season?')">
+                            <i class="ph ph-cow"></i>
+                            <span>Livestock</span>
                         </button>
                         <button class="suggestion-card"
-                            onclick="setInput('What is the current market price trend for Cassava and Yam across various states?')">
-                            <i class="ph ph-chart-line-up"></i>
-                            <span>Cassava Market Prices</span>
+                            onclick="setInput('What soil preparation and spacing should I use for maize planting at the start of the rainy season?')">
+                            <i class="ph ph-seedling"></i>
+                            <span>Planting</span>
                         </button>
                         <button class="suggestion-card"
-                            onclick="setInput('Can you provide an optimal fertilizer schedule for a newly planted rice field?')">
-                            <i class="ph ph-drop"></i>
-                            <span>Rice Field Fertilizer Guide</span>
+                            onclick="setInput('How should I adjust irrigation and field work if the forecast shows a shorter rainy season this year?')">
+                            <i class="ph ph-cloud-rain"></i>
+                            <span>Weather</span>
                         </button>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                         <i class="ph ph-paperclip"></i>
                     </button>
                     <textarea id="chat-input"
-                        placeholder="Ask about specific crops, diseases, or local market prices..." rows="1"></textarea>
+                        placeholder="Ask about plants, livestock, planting, or weather..." rows="1"></textarea>
                     <button class="send-btn" id="send-btn" disabled>
                         <i class="ph-fill ph-paper-plane-right"></i>
                     </button>
@@ -183,8 +183,7 @@
             <div class="share-link-box" style="flex-direction: column;">
                 <input type="email" id="auth-email-input" placeholder="farmer@example.com" class="auth-input"
                     style="width: 100%; border: 1px solid var(--border-subtle); background: var(--bg-main); color: var(--text-primary); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.5rem; outline: none;">
-                <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 0.75rem 1rem;">Continue to
-                    AI Consultation</button>
+                <button id="auth-submit-btn" class="btn-primary" style="width: 100%; padding: 0.75rem 1rem;">Continue</button>
             </div>
         </div>
     </div>
