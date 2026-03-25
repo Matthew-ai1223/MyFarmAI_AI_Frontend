@@ -11,6 +11,10 @@
     --accent-glow: #10b981;
     --accent-glow-subtle: rgba(16, 185, 129, 0.15);
     --accent-glow-hover: rgba(16, 185, 129, 0.3);
+    /* Cursor-like response loading (light) */
+    --cursor-load-track: rgba(15, 23, 42, 0.06);
+    --cursor-load-shimmer: rgba(15, 23, 42, 0.14);
+    --cursor-load-shimmer-bright: rgba(15, 23, 42, 0.22);
 
     /* Typography */
     --font-heading: 'Outfit', sans-serif;
@@ -35,6 +39,9 @@ body.dark-theme {
     --border-highlight: rgba(16, 185, 129, 0.2);
     --text-primary: #f0fdf4;
     --text-secondary: #9ca3af;
+    --cursor-load-track: rgba(255, 255, 255, 0.06);
+    --cursor-load-shimmer: rgba(255, 255, 255, 0.12);
+    --cursor-load-shimmer-bright: rgba(255, 255, 255, 0.2);
 }
 
 /* --- Base --- */
@@ -654,7 +661,137 @@ body.dark-theme .welcome-screen h2 {
     /* Subtle glow for user message */
 }
 
-/* --- Loading Indicator --- */
+/* --- AI response loading (Cursor-style: thinking row + shimmer bars) --- */
+.message.ai-response-loading .ai-loading-surface {
+    padding: 1rem 1.15rem;
+    min-width: min(100%, 420px);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid rgba(16, 185, 129, 0.35);
+    background: var(--bg-panel);
+    border-top-left-radius: 6px;
+    box-shadow: 0 1px 0 rgba(16, 185, 129, 0.06);
+}
+
+.cursor-style-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.cursor-thinking-row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+.cursor-thinking-label {
+    color: var(--text-secondary);
+}
+
+.cursor-thinking-dots {
+    display: inline-flex;
+    gap: 2px;
+    align-items: center;
+    height: 1em;
+}
+
+.cursor-thinking-dots span {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+    opacity: 0.35;
+    animation: cursor-dot-wave 1.05s ease-in-out infinite;
+}
+
+.cursor-thinking-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.cursor-thinking-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes cursor-dot-wave {
+    0%,
+    80%,
+    100% {
+        opacity: 0.25;
+        transform: translateY(0);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+.cursor-shimmer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    width: 100%;
+}
+
+.cursor-shimmer-line {
+    width: var(--w, 100%);
+    height: 11px;
+    border-radius: 6px;
+    background: var(--cursor-load-track);
+    position: relative;
+    overflow: hidden;
+}
+
+.cursor-shimmer-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--cursor-load-shimmer) 35%,
+        var(--cursor-load-shimmer-bright) 50%,
+        var(--cursor-load-shimmer) 65%,
+        transparent 100%
+    );
+    background-size: 220% 100%;
+    animation: cursor-bar-shimmer 1.35s ease-in-out infinite;
+}
+
+.cursor-shimmer-line:nth-child(1)::after {
+    animation-delay: 0s;
+}
+
+.cursor-shimmer-line:nth-child(2)::after {
+    animation-delay: 0.12s;
+}
+
+.cursor-shimmer-line:nth-child(3)::after {
+    animation-delay: 0.24s;
+}
+
+.cursor-shimmer-line:nth-child(4)::after {
+    animation-delay: 0.36s;
+}
+
+@keyframes cursor-bar-shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: -100% 0;
+    }
+}
+
+/* Legacy skeleton (unused by loader; kept for any old markup) */
 .skeleton-loader {
     display: flex;
     flex-direction: column;

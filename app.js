@@ -370,17 +370,29 @@ function addLoadingIndicator() {
     const id = 'loader-' + Date.now();
     const messageDiv = document.createElement('div');
     messageDiv.id = id;
-    messageDiv.className = 'message ai';
+    messageDiv.className = 'message ai ai-response-loading';
+    messageDiv.setAttribute('role', 'status');
+    messageDiv.setAttribute('aria-live', 'polite');
+    messageDiv.setAttribute('aria-label', 'Assistant is generating a response');
 
     messageDiv.innerHTML = `
         <div class="avatar ai-avatar">
             <i class="ph-fill ph-plant"></i>
         </div>
-        <div class="message-content-box" style="padding: 1rem;">
-            <div class="skeleton-loader">
-                <div class="skeleton-line"></div>
-                <div class="skeleton-line medium"></div>
-                <div class="skeleton-line short"></div>
+        <div class="message-content-box ai-loading-surface">
+            <div class="cursor-style-loading">
+                <div class="cursor-thinking-row">
+                    <span class="cursor-thinking-label">Generating</span>
+                    <span class="cursor-thinking-dots" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </div>
+                <div class="cursor-shimmer-stack">
+                    <div class="cursor-shimmer-line" style="--w:100%"></div>
+                    <div class="cursor-shimmer-line" style="--w:92%"></div>
+                    <div class="cursor-shimmer-line" style="--w:78%"></div>
+                    <div class="cursor-shimmer-line" style="--w:52%"></div>
+                </div>
             </div>
         </div>
     `;
