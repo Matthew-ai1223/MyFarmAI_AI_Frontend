@@ -420,8 +420,28 @@ const shareModal = document.getElementById('share-modal');
 const shareLinkInput = document.getElementById('share-link-input');
 const copyShareBtn = document.getElementById('copy-share-btn');
 const copyToast = document.getElementById('copy-toast');
+const optionsMenuBtn = document.getElementById('options-menu-btn');
+const optionsDropdownOpts = document.getElementById('options-dropdown-options');
+const optionsDropdown = document.getElementById('options-dropdown');
+
+if (optionsMenuBtn && optionsDropdownOpts) {
+    optionsMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        optionsDropdownOpts.classList.toggle('show');
+    });
+
+    optionsDropdownOpts.querySelectorAll('.options-item').forEach((item) => {
+        item.addEventListener('click', () => {
+            optionsDropdownOpts.classList.remove('show');
+        });
+    });
+}
 
 shareChatBtn.addEventListener('click', () => {
+    if (optionsDropdownOpts) {
+        optionsDropdownOpts.classList.remove('show');
+    }
+
     // Basic validation: Is there a chat to share?
     if (chatHistory.length === 0) {
         alert("There is no chat history to share yet! Start a conversation first.");
@@ -501,5 +521,9 @@ document.addEventListener('click', (e) => {
     if (!document.getElementById('lang-dropdown').contains(e.target)) {
         langDropdownBtn.classList.remove('open');
         langDropdownOpts.classList.remove('show');
+    }
+
+    if (optionsDropdown && !optionsDropdown.contains(e.target) && optionsDropdownOpts) {
+        optionsDropdownOpts.classList.remove('show');
     }
 });

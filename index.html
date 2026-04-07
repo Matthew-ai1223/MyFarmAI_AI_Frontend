@@ -76,10 +76,10 @@
                 </button>
                 <div class="header-title">
                     <!-- <h1 id="current-chat-title">MyFarmAi</h1> -->
-                    <span class="status-indicator">
+                    <!-- <span class="status-indicator">
                         <span class="status-dot"></span>
                         3.3 70B Engine Online
-                    </span>
+                    </span> -->
                 </div>
                 <div class="header-actions">
                     <div class="lang-selector-wrapper custom-dropdown" id="lang-dropdown">
@@ -104,10 +104,32 @@
                         </ul>
                         <input type="hidden" id="language-selector" value="English">
                     </div>
-                    <button class="icon-btn" id="share-chat-btn" title="Share Chat"><i
-                            class="ph ph-share-network"></i></button>
-                    <button class="icon-btn" title="Export Chat"><i class="ph ph-export"></i></button>
-                    <button class="icon-btn" title="Settings"><i class="ph ph-gear"></i></button>
+                    <div class="options-menu custom-dropdown" id="options-dropdown">
+                        <button class="icon-btn options-trigger" id="options-menu-btn" title="Options"
+                            aria-label="Open options menu">
+                            <i class="ph ph-dots-three-vertical"></i>
+                        </button>
+                        <ul class="dropdown-options options-dropdown-list" id="options-dropdown-options">
+                            <li>
+                                <button class="options-item" id="share-chat-btn" title="Share Chat">
+                                    <i class="ph ph-share-network"></i>
+                                    <span>Share Chat</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="options-item" id="export-chat-btn" title="Export Chat">
+                                    <i class="ph ph-export"></i>
+                                    <span>Export Chat</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="options-item" id="header-settings-btn" title="Settings">
+                                    <i class="ph ph-gear"></i>
+                                    <span>Settings</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </header>
 

@@ -448,6 +448,39 @@ button:focus {
     color: var(--text-primary);
 }
 
+.options-menu {
+    position: relative;
+}
+
+.options-dropdown-list {
+    min-width: 190px;
+}
+
+.options-dropdown-list li {
+    padding: 0;
+}
+
+.options-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    transition: background 0.2s, color 0.2s;
+}
+
+.options-item:hover {
+    background: var(--bg-panel);
+    color: var(--text-primary);
+}
+
+.options-item i {
+    font-size: 1.1rem;
+    color: var(--accent-glow);
+}
+
 
 /* --- Chat Container --- */
 .chat-container {
